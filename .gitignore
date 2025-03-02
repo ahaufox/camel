@@ -431,3 +431,7 @@ benchmark/gaia/results.jsonl
 
 # Secret files for docker
 .container/.env
+/examples/
+
+README.md
+self_config.yaml
