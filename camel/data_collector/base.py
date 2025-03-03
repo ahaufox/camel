@@ -52,7 +52,7 @@ class CollectorData:
             ValueError: If neither message nor function call is provided.
 
         """
-        if role not in ["user", "assistant", "system", "tool"]:
+        if role not in ["user", "User", "assistant","Assistant", "system", "tool"]:
             raise ValueError(f"Role {role} not supported")
         if role == "system" and function_call:
             raise ValueError("System role cannot have function call")
@@ -98,7 +98,7 @@ class BaseDataCollector(ABC):
 
     def step(
         self,
-        role: Literal["user", "assistant", "system", "tool"],
+        role: Literal["user", "User", "assistant", "Assistant", "system", "tool"],
         name: Optional[str] = None,
         message: Optional[str] = None,
         function_call: Optional[Dict[str, Any]] = None,
@@ -201,6 +201,10 @@ class BaseDataCollector(ABC):
         Returns:
             List[CollectorData]: The message history of the agent
         """
+        # for h in self.history:
+        #     print(f"msg:{h}")
+        #     print(h.name)
+
         if not self.history:
             for _name, agent in self.agents:
                 if _name == name:
