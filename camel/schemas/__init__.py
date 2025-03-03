@@ -14,5 +14,6 @@
 
 from .openai_converter import OpenAISchemaConverter
 from .outlines_converter import OutlinesConverter
+from .qwen_converter import QwenSchemaConverter
 
-__all__ = ["OpenAISchemaConverter", "OutlinesConverter"]
+__all__ = ["OpenAISchemaConverter", "OutlinesConverter","QwenSchemaConverter"]
