@@ -70,6 +70,7 @@ from camel.types import (
 )
 from camel.types.agents import ToolCallingRecord
 from camel.utils import get_model_encoding
+from camel.load_config import config
 
 if TYPE_CHECKING:
     from camel.terminators import ResponseTerminator
@@ -102,7 +103,7 @@ SIMPLE_FORMAT_PROMPT = TextPrompt(
 
 @track_agent(name="ChatAgent")
 class ChatAgent(BaseAgent):
-    r"""Class for managing conversations of CAMEL Chat Agents.
+    r"""用于管理 CAMEL 聊天代理对话的类.
 
     Args:
         system_message (Union[BaseMessage, str], optional): The system message
@@ -149,7 +150,7 @@ class ChatAgent(BaseAgent):
         memory: Optional[AgentMemory] = None,
         message_window_size: Optional[int] = None,
         token_limit: Optional[int] = None,
-        output_language: Optional[str] = None,
+        output_language: Optional[str] = Optional[config('default','language')],#
         tools: Optional[List[Union[FunctionTool, Callable]]] = None,
         external_tools: Optional[
             List[Union[FunctionTool, Callable, Dict[str, Any]]]
@@ -189,7 +190,10 @@ class ChatAgent(BaseAgent):
             if isinstance(system_message, str)
             else system_message
         )
-        self._output_language = output_language
+        if output_language:
+            self._output_language = output_language
+        else:
+            self._output_language = 'zh-cn'
         self._system_message = (
             self._generate_system_message_for_output_language()
         )
@@ -327,10 +331,9 @@ class ChatAgent(BaseAgent):
     def _generate_system_message_for_output_language(
         self,
     ) -> Optional[BaseMessage]:
-        r"""Generate a new system message with the output language prompt.
+        r"""使用输出语言提示生成新的系统消息.
 
-        The output language determines the language in which the output text
-        should be generated.
+        输出语言确定生成输出文本时应使用的语言。
 
         Returns:
             BaseMessage: The new system message.
@@ -339,8 +342,7 @@ class ChatAgent(BaseAgent):
             return self._original_system_message
 
         language_prompt = (
-            "\nRegardless of the input language, "
-            f"you must output text in {self._output_language}."
+            f"\n无论输入语言如何，您必须以{self._output_language}进行回复."
         )
 
         if self._original_system_message is not None:
@@ -544,22 +546,17 @@ class ChatAgent(BaseAgent):
         choices = reason_params.get("choices", 3)
         threshold = reason_params.get("threshold", 0.5)
 
-        input_message.content += f"""First, come up with potential {choices} 
-        choices/candidates. 
-        Next, assign a probability/credibility between 0 and 1 to each choice 
-        (make sure they add up to 1). 
-        Finally, if only one choice has a probability/credibility greater than
-        {threshold}, continue with that choice.
-        Otherwise, call tool `ask_human_via_console` to ask the user to decide 
-        which one to continue with, give user the probability/credibility of 
-        all choices, and the reason for each choice.
+        input_message.content += f"""请按以下流程思考：
+        1、提出潜在的 {choices} 个选择或观点并解释原因，提供每个选项的概率/可信度，确保加在一起等于1。
+        2、如果只有一个选项概率大于{threshold}, 围绕这个选择详细解释。。
+        3、如果有多个, 提供每个选项的概率/可信度,确保加在一起等于1,同时解释原因并让用户选择。
         """
-
+        # 3、如果有多个, 提供每个选项的概率/可信度,确保加在一起等于1,同时解释原因并调用 tool `ask_human_via_console` 并传入各个选项作为参数让用户选择。
         # Add tools to agent
         from camel.toolkits.human_toolkit import HumanToolkit
 
         human_toolkit = HumanToolkit()
-        self.add_tool(human_toolkit.ask_human_via_console)
+        # self.add_tool(human_toolkit.ask_human_via_console)
 
         return input_message
 
