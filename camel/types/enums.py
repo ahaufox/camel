@@ -16,7 +16,7 @@ from enum import Enum, EnumMeta
 from typing import cast
 
 from camel.types.unified_model_type import UnifiedModelType
-
+from camel.load_config import config
 
 class RoleType(Enum):
     ASSISTANT = "assistant"
@@ -27,8 +27,7 @@ class RoleType(Enum):
 
 
 class ModelType(UnifiedModelType, Enum):
-    DEFAULT = os.getenv("DEFAULT_MODEL_TYPE", "gpt-4o-mini")
-
+    DEFAULT = config('default_llm','model')# os.getenv("DEFAULT_MODEL_TYPE", "gpt-4o-mini")
     GPT_3_5_TURBO = "gpt-3.5-turbo"
     GPT_4 = "gpt-4"
     GPT_4_TURBO = "gpt-4-turbo"
@@ -152,6 +151,7 @@ class ModelType(UnifiedModelType, Enum):
     QWEN_MAX = "qwen-max"
     QWEN_PLUS = "qwen-plus"
     QWEN_TURBO = "qwen-turbo"
+    QWEN_TURBO2 = "qwen-turbo-1101"
     QWEN_LONG = "qwen-long"
     QWEN_VL_MAX = "qwen-vl-max"
     QWEN_VL_PLUS = "qwen-vl-plus"
@@ -165,6 +165,8 @@ class ModelType(UnifiedModelType, Enum):
     QWEN_2_5_14B = "qwen2.5-14b-instruct"
     QWEN_QWQ_32B = "qwq-32b-preview"
     QWEN_QVQ_72B = "qvq-72b-preview"
+    DEEPSEEK_V3 = "deepseek-v3"
+    DEEPSEEK_R1 = "deepseek-r1"
 
     # Yi models (01-ai)
     YI_LIGHTNING = "yi-lightning"
@@ -179,6 +181,7 @@ class ModelType(UnifiedModelType, Enum):
 
     # DeepSeek models
     DEEPSEEK_CHAT = "deepseek-chat"
+
     DEEPSEEK_REASONER = "deepseek-reasoner"
     # InternLM models
     INTERNLM3_LATEST = "internlm3-latest"
@@ -454,6 +457,7 @@ class ModelType(UnifiedModelType, Enum):
             ModelType.QWEN_MAX,
             ModelType.QWEN_PLUS,
             ModelType.QWEN_TURBO,
+            ModelType.QWEN_TURBO2,
             ModelType.QWEN_LONG,
             ModelType.QWEN_VL_MAX,
             ModelType.QWEN_VL_PLUS,
@@ -467,6 +471,8 @@ class ModelType(UnifiedModelType, Enum):
             ModelType.QWEN_2_5_14B,
             ModelType.QWEN_QWQ_32B,
             ModelType.QWEN_QVQ_72B,
+            ModelType.DEEPSEEK_V3,
+            ModelType.DEEPSEEK_R1
         }
 
     @property
@@ -704,6 +710,15 @@ class ModelType(UnifiedModelType, Enum):
             ModelType.QWEN_LONG,
         }:
             return 10_000_000
+        elif self in {
+            ModelType.QWEN_TURBO2,}:
+            return 1_000_000
+        elif self in {
+            ModelType.DEEPSEEK_V3,}:
+            return 64_000
+        elif self in {
+            ModelType.DEEPSEEK_R1, }:
+            return 64_000
         else:
             raise ValueError("Unknown model type")
 
@@ -861,7 +876,6 @@ class OpenAPIName(Enum):
 
 class ModelPlatformType(Enum):
     DEFAULT = os.getenv("DEFAULT_MODEL_PLATFORM_TYPE", "openai")
-
     OPENAI = "openai"
     AZURE = "azure"
     ANTHROPIC = "anthropic"
