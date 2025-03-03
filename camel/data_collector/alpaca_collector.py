@@ -19,13 +19,12 @@ from typing_extensions import Self
 from camel.agents import ChatAgent
 from camel.data_collector.base import BaseDataCollector
 from camel.messages import AlpacaItem, BaseMessage
-from camel.schemas import OpenAISchemaConverter
+from camel.schemas import OpenAISchemaConverter, QwenSchemaConverter
 
 # ruff: noqa: E501
 DEFAULT_CONVERTER_PROMPTS = """
-    Extract key entities and attributes from the conversations
-    and convert them into a structured JSON format.
-    For example:
+    从对话中提取关键实体和属性，并将其转换为结构化的 JSON 格式。
+    示例:
     Instruction: You are a helpful assistant. 
     User: When is the release date of the video game Portal?
     Assistant: The release date of the video game Portal is October 9.
@@ -62,15 +61,15 @@ class AlpacaDataCollector(BaseDataCollector):
         return self
 
     def convert(self) -> Dict[str, Any]:
-        r"""Convert the collected data into a dictionary."""
+        r"""将收集的数据转换为字典."""
         if self.agent_name is None:
             raise ValueError("No agent injected")
-
+        print(f"Converting data collected by {self.agent_name}...")
         history = self.get_agent_history(self.agent_name)
         if not history:
             raise ValueError("No data collected.")
 
-        # Validate and process history
+        # 验证 处理 history
         if len(history) == 3 and history[0].role == "system":
             history = history[1:]  # Ignore the system message.
         elif len(history) != 2:
@@ -94,8 +93,9 @@ class AlpacaDataCollector(BaseDataCollector):
 
     def llm_convert(
         self,
-        converter: Optional[OpenAISchemaConverter] = None,
+        converter: Optional[Union[OpenAISchemaConverter,QwenSchemaConverter]] = None,
         prompt: Optional[str] = None,
+
     ) -> Dict[str, str]:
         r"""Convert collected data using an LLM schema converter.
 
