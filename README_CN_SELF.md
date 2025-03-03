@@ -1,69 +1,63 @@
-[![Colab][colab-image]][colab-url]
-[![Hugging Face][huggingface-image]][huggingface-url]
-[![Slack][slack-image]][slack-url]
-[![Discord][discord-image]][discord-url]
-[![Wechat][wechat-image]][wechat-url]
-[![Twitter][twitter-image]][twitter-url]
+## angent使用说明
+### 基本用法
+##### 调用/创建agent
+```python 
+# 配置model
+openai_model = ModelFactory.create(
+    model_platform=ModelPlatformType.QWEN,
+    model_type=ModelType.DEEPSEEK_R1,
+)
 
-______________________________________________________________________
+# 配置agent
+openai_agent = ChatAgent(
+    system_message=sys_msg,
+    model=openai_model,
+    output_language="中文",
+)
 
-# CAMEL: Finding the Scaling Laws of Agents
-
-[![Python Version][python-image]][python-url]
-[![PyTest Status][pytest-image]][pytest-url]
-[![Documentation][docs-image]][docs-url]
-[![Star][star-image]][star-url]
-[![Package License][package-license-image]][package-license-url]
-
-<p align="center">
-  <a href="https://github.com/camel-ai/camel#community">Community</a> |
-  <a href="https://github.com/camel-ai/camel#installation">Installation</a> |
-  <a href="https://camel-ai.github.io/camel/">Documentation</a> |
-  <a href="https://github.com/camel-ai/camel/tree/HEAD/examples">Examples</a> |
-  <a href="https://arxiv.org/abs/2303.17760">Paper</a> |
-  <a href="https://github.com/camel-ai/camel#citation">Citation</a> |
-  <a href="https://github.com/camel-ai/camel#contributing-to-camel-">Contributing</a> |
-  <a href="https://www.camel-ai.org/">CAMEL-AI</a>
-</p>
-
-<p align="center">
-  <img src='https://raw.githubusercontent.com/camel-ai/camel/master/misc/logo_light.png' width=800>
-</p>
+```
+##### 调用agent
+```python
+response = openai_agent.step(usr_msg)
+````
+- 每次使用step都会携带历史回话
 
 
-## Community
-🐫 CAMEL is an open-source community dedicated to finding the scaling laws of agents. We believe that studying these agents on a large scale offers valuable insights into their behaviors, capabilities, and potential risks. To facilitate research in this field, we implement and support various types of agents, tasks, prompts, models, and simulated environments.
-
-Join us ([*Discord*](https://discord.camel-ai.org/), [*WeChat*](https://ghli.org/camel/wechat.png) or [*Slack*](https://join.slack.com/t/camel-ai/shared_invite/zt-2g7xc41gy-_7rcrNNAArIP6sLQqldkqQ)) in pushing the boundaries of finding the scaling laws of agents.
-
-## What Can You Build With CAMEL?
-
-### 🤖 Customize Agents
-- Customizable agents are the fundamental entities of the CAMEL architecture. CAMEL empowers you to customize agents using our modular components for specific tasks.
-
-### ⚙️ Build Multi-Agent Systems
-- We propose a multi-agent framework to address agents' autonomous cooperation challenges, guiding agents toward task completion while maintaining human intentions.
-
-### 💻 Practical Applications
-- The CAMEL framework serves as a generic infrastructure for a wide range of multi-agent applications, including task automation, data generation, and world simulations.
+- 具体参考：examples/agent/agent_step_with_reasoning.py
 
 
-## Why Should You Use CAMEL?
-
-1. Comprehensive Customization and Collaboration:
-
-    - Integrates over 20 advanced model platforms (e.g., commercial models like OpenAI, open-source models such as Llama3, and self-deployment frameworks like Ollama).
-
-    - Supports extensive external tools (e.g., Search, Twitter, Github, Google Maps, Reddit, Slack utilities).
-    - Includes memory and prompt components for deep customization.
-    - Facilitates complex multi-agent systems with advanced collaboration features.
+### 进阶用法
+```python
 
 
-2. User-Friendly with Transparent Internal Structure:
-    - Designed for transparency and consistency in internal structure.
+```
+___________________________________________________________________
 
-    - Offers comprehensive [tutorials and detailed docstrings](https://docs.camel-ai.org/) for all functions.
-    - Ensures an approachable learning curve for newcomers.
+## 你可以用 Camel 构建什么？
+
+### 🤖 自定义代理
+- 可定制的代理是 CAMEL 架构的基本实体。CAMEL 使您能够使用我们的模块化组件为特定任务定制代理。
+### ⚙️ 构建多代理系统
+- 我们提出了一个多智能体框架来解决智能体的自主合作挑战，指导智能体完成任务，同时保持人类的意图。
+
+### 💻 实际应用
+- CAMEL 框架是各种多智能体应用程序的通用基础设施，包括任务自动化、数据生成和世界模拟。
+
+## 为什么要使用 CAMEL？
+
+1. 全面的定制和协作：
+
+- 集成了 20 多个高级模型平台（例如 OpenAI 等商业模式、Llama3 等开源模型以及 Ollama 等自部署框架）。
+
+- 支持广泛的外部工具（例如，搜索、Twitter、Github、Google Maps、Reddit、Slack 实用程序）。
+    - 包括用于深度定制的内存和提示组件。
+    - 通过高级协作功能促进复杂的多代理系统。
+
+2. 用户友好的透明内部结构：
+    - 专为内部结构的透明度和一致性而设计。
+
+- 为所有功能提供全面的 [教程和详细文档字符串]（https://docs.camel-ai.org/）。
+    - 确保新人的学习曲线平易近人。
 
 
 ## Try It Yourself
@@ -89,7 +83,7 @@ pip install 'camel-ai[all]'  # Replace with options below
 ```
 
 Available extras:
-- `all`: Includes all features below
+- `all`: 包括以下所有功能
 - `model_platforms`: OpenAI, Google, Mistral, Anthropic Claude, Cohere etc.
 - `huggingface`: Transformers, Diffusers, Accelerate, Datasets, PyTorch etc.
 - `rag`: Sentence Transformers, Qdrant, Milvus, BM25 etc.
